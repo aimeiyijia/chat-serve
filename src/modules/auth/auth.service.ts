@@ -95,8 +95,14 @@ export class AuthService {
     if (isHave.length) {
       return { code: RCode.FAIL, msg: '用户名重复', data: '' };
     }
-    if (!passwordVerify(user.password) || !nameVerify(user.username)) {
-      return { code: RCode.FAIL, msg: '注册校验不通过！', data: '' };
+    const verifyFail = { code: RCode.FAIL, msg: '注册校验不通过！', data: '' };
+    if (!passwordVerify(user.password)) {
+      verifyFail.msg = "密码至少含有一个字母和一个数字且总长度不低于6";
+      return verifyFail;
+    }
+    if (!nameVerify(user.username)) {
+      verifyFail.msg = "用户名仅允许含有中文、字母、数字且总长度不低于1";
+      return verifyFail;
     }
     user.avatar = `public/avatar/server.png`;
     user.role = 'server';
